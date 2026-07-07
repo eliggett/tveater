@@ -1,0 +1,21 @@
+# tveater web app. Install: see README "Deploy" section.
+# sudo cp deploy/tveater.service /etc/systemd/system/ (edit User/paths first)
+[Unit]
+Description=tveater — HDHomeRun web front-end
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=eliggett
+WorkingDirectory=/home/eliggett/Documents/projects/tveater
+ExecStart=/usr/bin/python3 /home/eliggett/Documents/projects/tveater/server.py
+Environment=TVEATER_PORT=8089
+Environment=TVEATER_DEVICE_IP=10.0.0.224
+Restart=on-failure
+RestartSec=3
+# Clean up any orphaned ffmpeg on stop so tuners always free.
+KillMode=mixed
+
+[Install]
+WantedBy=multi-user.target

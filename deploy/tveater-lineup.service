@@ -1,0 +1,11 @@
+# One-shot: refresh lineup.m3u from the device. Triggered by the timer below.
+[Unit]
+Description=tveater — refresh HDHomeRun channel lineup
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=eliggett
+Environment=TVEATER_DEVICE_IP=10.0.0.224
+ExecStart=/home/eliggett/Documents/projects/tveater/deploy/fetch-lineup.sh

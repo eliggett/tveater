@@ -1,0 +1,221 @@
+:root {
+  --bg: #0e0f12;
+  --bg-elev: #16181d;
+  --bg-elev2: #1e2128;
+  --border: #2a2e37;
+  --text: #e6e8ec;
+  --text-dim: #9aa0ab;
+  --accent: #4c8dff;
+  --accent-dim: #2b4a7d;
+  --good: #35c46a;
+  --warn: #e6b24c;
+  --bad: #e05a5a;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  height: 100%;
+  background: var(--bg);
+  color: var(--text);
+  font: 14px/1.4 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+
+#app { display: flex; height: 100vh; }
+
+/* Mobile top bar with the channel-list toggle (hidden on desktop). */
+#mobilebar {
+  display: none;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 12px;
+  background: var(--bg-elev);
+  border-bottom: 1px solid var(--border);
+}
+#nav-toggle {
+  background: var(--bg-elev2);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 15px;
+  cursor: pointer;
+}
+#nav-toggle:active { background: var(--accent-dim); }
+#mobilebar-title {
+  color: var(--accent);
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ---- Sidebar / channel list ---- */
+#sidebar {
+  width: 300px;
+  min-width: 300px;
+  background: var(--bg-elev);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+}
+#sidebar-head { padding: 14px; border-bottom: 1px solid var(--border); }
+#sidebar-head h1 {
+  margin: 0 0 10px;
+  font-size: 18px;
+  letter-spacing: 0.5px;
+  color: var(--accent);
+}
+#filter {
+  width: 100%;
+  padding: 8px 10px;
+  background: var(--bg-elev2);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text);
+  font-size: 13px;
+}
+#filter:focus { outline: none; border-color: var(--accent); }
+
+#channels {
+  list-style: none;
+  margin: 0;
+  padding: 6px;
+  overflow-y: auto;
+  flex: 1;
+}
+#channels .group-label {
+  position: sticky;
+  top: 0;
+  padding: 10px;
+  margin-top: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: var(--text-dim);
+  background: var(--bg-elev);
+  z-index: 1;
+}
+#channels li.channel {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 8px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  user-select: none;
+}
+#channels li.channel:hover { background: var(--bg-elev2); }
+#channels li.channel.active { background: var(--accent-dim); }
+#channels .num {
+  color: var(--accent);
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+  min-width: 34px;
+}
+#channels .name { color: var(--text); }
+#channels li.loading { padding: 14px; color: var(--text-dim); }
+
+/* ---- Main / player ---- */
+#main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  gap: 14px;
+  min-width: 0;
+}
+#player-wrap {
+  position: relative;
+  background: #000;
+  border-radius: 10px;
+  overflow: hidden;
+  aspect-ratio: 16 / 9;
+  max-height: 72vh;
+}
+#video { width: 100%; height: 100%; display: block; background: #000; }
+#placeholder {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-dim);
+  pointer-events: none;
+}
+
+/* Transient "Switching to channel …" overlay, shown while ffmpeg restarts. */
+#status-text {
+  position: absolute;
+  inset: 0;
+  display: none;              /* JS toggles to flex while a switch is pending */
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 0 24px;
+  background: rgba(14, 15, 18, 0.72);
+  color: var(--text);
+  font-size: 15px;
+  z-index: 2;
+  pointer-events: none;
+}
+
+#controls { display: flex; gap: 18px; flex-wrap: wrap; }
+.control { display: flex; align-items: center; gap: 8px; }
+.control label { color: var(--text-dim); font-size: 13px; }
+.control select {
+  background: var(--bg-elev2);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 6px 8px;
+  font-size: 13px;
+}
+.control select:focus { outline: none; border-color: var(--accent); }
+
+#readouts {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 12px;
+  color: var(--text-dim);
+  flex-wrap: wrap;
+}
+#readouts .sep { opacity: 0.4; }
+#now-playing { color: var(--text); }
+#status-dot {
+  width: 9px; height: 9px; border-radius: 50%;
+  background: var(--text-dim); margin-left: auto;
+}
+#status-dot.live { background: var(--good); box-shadow: 0 0 6px var(--good); }
+#status-dot.buffering { background: var(--warn); }
+#status-dot.error { background: var(--bad); }
+#status-dot.idle { background: var(--text-dim); }
+
+/* ---- Mobile (phones) ---- */
+@media (max-width: 768px) {
+  #app { flex-direction: column; }
+  #mobilebar { display: flex; }
+
+  /* Channel list starts shown, on top; scrolls within its own frame. */
+  #sidebar {
+    width: 100%;
+    min-width: 0;
+    max-height: 55vh;
+    border-right: none;
+    border-bottom: 1px solid var(--border);
+  }
+  /* Collapsed: hide the list so the video takes the screen. */
+  #app.nav-collapsed #sidebar { display: none; }
+
+  #main {
+    padding: 10px;
+    gap: 10px;
+  }
+  /* Player spans the full available width (16:9), no desktop height cap. */
+  #player-wrap { max-height: none; }
+
+  #controls { gap: 12px; }
+}

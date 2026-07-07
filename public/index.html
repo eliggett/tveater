@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>tveater</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <div id="app">
+    <div id="mobilebar">
+      <button id="nav-toggle" aria-label="Toggle channel list">☰ Channels</button>
+      <span id="mobilebar-title">tveater</span>
+    </div>
+    <aside id="sidebar">
+      <div id="sidebar-head">
+        <h1>tveater</h1>
+        <input id="filter" type="search" placeholder="Filter channels…" autocomplete="off">
+      </div>
+      <ul id="channels"><li class="loading">Loading channels…</li></ul>
+    </aside>
+
+    <main id="main">
+      <div id="player-wrap">
+        <video id="video" playsinline controls autoplay></video>
+        <div id="placeholder">Select a channel to start watching</div>
+        <div id="status-text"></div>
+      </div>
+
+      <div id="controls">
+        <div class="control">
+          <label for="quality">Quality</label>
+          <select id="quality">
+            <option value="1080p">1080p — high</option>
+            <option value="720p" selected>720p — balanced</option>
+            <option value="480p">480p — low</option>
+            <option value="360p">360p — minimal</option>
+          </select>
+        </div>
+        <div class="control">
+          <label for="captions">Captions</label>
+          <select id="captions"><option value="-1">Off</option></select>
+        </div>
+      </div>
+
+      <div id="readouts">
+        <span id="now-playing">—</span>
+        <span class="sep">·</span>
+        <span id="datarate" title="Actual data rate of the stream sent to the viewer">Data Rate Out: —</span>
+        <span class="sep">·</span>
+        <span id="signal" title="Tuner signal, refreshed every 60s">Signal: —</span>
+        <span id="status-dot" class="idle" title="Stream status"></span>
+      </div>
+    </main>
+  </div>
+
+  <script src="/vendor/hls.min.js"></script>
+  <script src="/app.js"></script>
+</body>
+</html>

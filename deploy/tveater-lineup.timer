@@ -1,0 +1,11 @@
+# Run the lineup refresh once a day (and shortly after boot if it was missed).
+[Unit]
+Description=tveater — daily channel lineup refresh
+
+[Timer]
+OnCalendar=daily
+Persistent=true
+RandomizedDelaySec=300
+
+[Install]
+WantedBy=timers.target
