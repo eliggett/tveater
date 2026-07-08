@@ -1,3 +1,5 @@
+![tveater logo](logo/tveater_180x180.png)
+
 # tveater
 
 tveater, pronounced "tee veeter", enables users of the HD HomeRun TV Tuners to view their video streams in a web browser, without installing any apps. tveater transcodes the video to the user's selected quality, enabling streaming over difficult links. 
