@@ -113,6 +113,79 @@ async function requestStream(channelId, quality) {
   await pollStatus();
 }
 
+// ---- Manual tuning ---------------------------------------------------------
+// Tune an arbitrary virtual/physical/RF channel not present in the lineup.
+// The server validates the parameters and builds the HDHomeRun /auto/<tune>
+// target; here we just collect and sanity-check the inputs.
+const manualBtn = document.getElementById("manual-btn");
+const manualModal = document.getElementById("manual-modal");
+const manualKind = document.getElementById("manual-kind");
+const manualValue = document.getElementById("manual-value");
+const manualValueLabel = document.getElementById("manual-value-label");
+const manualSub = document.getElementById("manual-sub");
+const manualError = document.getElementById("manual-error");
+const manualTuneBtn = document.getElementById("manual-tune");
+const manualCancelBtn = document.getElementById("manual-cancel");
+
+const MANUAL_LABELS = {
+  virtual: "Virtual channel",
+  physical: "Physical channel",
+  frequency: "Frequency (MHz)",
+};
+const MANUAL_PLACEHOLDERS = { virtual: "e.g. 5", physical: "e.g. 33", frequency: "e.g. 473.0" };
+
+function openManual() {
+  manualError.hidden = true;
+  manualValueLabel.textContent = MANUAL_LABELS[manualKind.value];
+  manualValue.placeholder = MANUAL_PLACEHOLDERS[manualKind.value];
+  manualModal.hidden = false;
+  manualValue.focus();
+}
+
+function closeManual() { manualModal.hidden = true; }
+
+function validateManual(kind, value, sub) {
+  if (!/^\d+$/.test(sub)) return "Sub channel must be a whole number.";
+  if (kind === "frequency") {
+    if (!/^\d+(\.\d)?$/.test(value)) return "Enter a frequency in MHz (one decimal allowed).";
+  } else if (!/^\d+$/.test(value)) {
+    return "Enter a whole channel number.";
+  }
+  return null;
+}
+
+function describeManual(kind, value, sub) {
+  if (kind === "virtual") return `virtual channel ${value}.${sub}`;
+  if (kind === "physical") return `physical channel ${value}, sub ${sub}`;
+  return `${value} MHz, sub ${sub}`;
+}
+
+async function submitManual() {
+  const kind = manualKind.value;
+  const value = manualValue.value.trim();
+  const sub = manualSub.value.trim() || "1";
+  const err = validateManual(kind, value, sub);
+  if (err) { manualError.textContent = err; manualError.hidden = false; return; }
+  closeManual();
+  if (isMobile()) appEl.classList.add("nav-collapsed");
+  showBanner(`Tuning ${describeManual(kind, value, sub)}… please wait a moment`);
+  setDot("buffering");
+  await requestStream({ manual: true, kind, value, sub }, qualityEl.value);
+}
+
+manualBtn.addEventListener("click", openManual);
+manualCancelBtn.addEventListener("click", closeManual);
+manualTuneBtn.addEventListener("click", submitManual);
+manualKind.addEventListener("change", () => {
+  manualValueLabel.textContent = MANUAL_LABELS[manualKind.value];
+  manualValue.placeholder = MANUAL_PLACEHOLDERS[manualKind.value];
+});
+manualModal.addEventListener("click", (e) => { if (e.target === manualModal) closeManual(); });
+manualModal.addEventListener("keydown", (e) => {
+  if (e.key === "Enter") { e.preventDefault(); submitManual(); }
+  else if (e.key === "Escape") { e.preventDefault(); closeManual(); }
+});
+
 // Bring this client into sync with the shared session described by /api/status.
 function reconcile(s) {
   if (!s.active) {

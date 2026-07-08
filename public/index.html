@@ -17,6 +17,7 @@
     <aside id="sidebar">
       <div id="sidebar-head">
         <h1><img src="/favicon.svg" alt="tveater logo" width="20" height="20"> tveater</h1>
+        <button id="manual-btn" type="button">Manual tuning…</button>
         <input id="filter" type="search" placeholder="Filter channels…" autocomplete="off">
       </div>
       <ul id="channels"><li class="loading">Loading channels…</li></ul>
@@ -54,6 +55,33 @@
         <span id="status-dot" class="idle" title="Stream status"></span>
       </div>
     </main>
+  </div>
+
+  <div id="manual-modal" class="modal-backdrop" hidden>
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="manual-title">
+      <h2 id="manual-title">Manual tuning</h2>
+      <div class="modal-row">
+        <label for="manual-kind">Tune by</label>
+        <select id="manual-kind">
+          <option value="virtual">Virtual channel</option>
+          <option value="physical">Physical channel</option>
+          <option value="frequency">Frequency (MHz)</option>
+        </select>
+      </div>
+      <div class="modal-row">
+        <label id="manual-value-label" for="manual-value">Virtual channel</label>
+        <input id="manual-value" type="text" inputmode="decimal" autocomplete="off">
+      </div>
+      <div class="modal-row">
+        <label for="manual-sub">Sub channel</label>
+        <input id="manual-sub" type="text" inputmode="numeric" value="1" autocomplete="off">
+      </div>
+      <p id="manual-error" class="modal-error" hidden></p>
+      <div class="modal-actions">
+        <button id="manual-cancel" type="button">Cancel</button>
+        <button id="manual-tune" type="button" class="primary">Tune</button>
+      </div>
+    </div>
   </div>
 
   <script src="/vendor/hls.min.js"></script>

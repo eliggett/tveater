@@ -39,7 +39,7 @@ class Session:
             self.quality = quality
             self.epoch += 1
             self.proc = subprocess.Popen(
-                self._build_cmd(channel["id"], quality),
+                self._build_cmd(channel, quality),
                 stdout=subprocess.DEVNULL,
                 stderr=subprocess.DEVNULL,
                 cwd=config.HLS_DIR,
@@ -141,14 +141,14 @@ class Session:
             time.sleep(0.25)
         raise TimeoutError("stream did not start in time")
 
-    def _build_cmd(self, channel_id, quality):
+    def _build_cmd(self, channel, quality):
         q = config.QUALITIES[quality]
         # -a53cc 1 carries EIA-608/CEA-608 captions from the MPEG-2 source into
         # the H.264 bitstream as SEI so hls.js can render them.
         return [
             "ffmpeg", "-hide_banner", "-loglevel", "error",
             "-fflags", "+genpts",
-            "-i", config.stream_url(channel_id),
+            "-i", config.stream_url(channel),
             "-map", "0:v:0", "-map", "0:a:0?",
             "-c:v", "libx264", "-preset", config.X264_PRESET, "-a53cc", "1",
             "-b:v", q["vbr"], "-maxrate", q["maxrate"], "-bufsize", q["bufsize"],

@@ -147,9 +147,14 @@ class Handler(BaseHTTPRequestHandler):
         self._serve_file(abs_path, no_cache=True)
 
     def _resolve_channel(self, ref):
-        """Accept a channel id/number string or a channel-like dict."""
-        if isinstance(ref, dict) and ref.get("id"):
-            return ref
+        """Accept a channel id/number string, a channel-like dict, or a manual
+        tune spec ({"manual": true, "kind", "value", "sub"})."""
+        if isinstance(ref, dict):
+            if ref.get("manual"):
+                return config.manual_channel(
+                    ref.get("kind"), ref.get("value", ""), ref.get("sub", "1"))
+            if ref.get("id"):
+                return ref
         if isinstance(ref, str):
             for c in hdhr.parse_lineup():
                 if c["id"] == ref or c["number"] == ref:

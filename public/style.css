@@ -73,6 +73,19 @@ html, body {
 #sidebar-head h1 img {
   flex-shrink: 0;
 }
+#manual-btn {
+  width: 100%;
+  margin-bottom: 10px;
+  padding: 8px 10px;
+  background: var(--bg-elev2);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-size: 13px;
+  cursor: pointer;
+}
+#manual-btn:hover { border-color: var(--accent); }
+#manual-btn:active { background: var(--accent-dim); }
 #filter {
   width: 100%;
   padding: 8px 10px;
@@ -83,6 +96,73 @@ html, body {
   font-size: 13px;
 }
 #filter:focus { outline: none; border-color: var(--accent); }
+
+/* ---- Manual tuning modal ---- */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 10;
+}
+.modal-backdrop[hidden] { display: none; }
+.modal {
+  width: 100%;
+  max-width: 340px;
+  background: var(--bg-elev);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 18px;
+}
+.modal h2 { margin: 0 0 14px; font-size: 16px; color: var(--accent); }
+.modal-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+.modal-row label { color: var(--text-dim); font-size: 13px; }
+.modal-row select,
+.modal-row input {
+  flex: 1;
+  max-width: 190px;
+  padding: 7px 9px;
+  background: var(--bg-elev2);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-size: 13px;
+}
+.modal-row select:focus,
+.modal-row input:focus { outline: none; border-color: var(--accent); }
+.modal-error { margin: 0 0 12px; color: var(--bad); font-size: 12px; }
+.modal-error[hidden] { display: none; }
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 4px;
+}
+.modal-actions button {
+  padding: 8px 14px;
+  background: var(--bg-elev2);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-size: 13px;
+  cursor: pointer;
+}
+.modal-actions button:hover { border-color: var(--accent); }
+.modal-actions button.primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+.modal-actions button.primary:hover { background: #3d7bec; }
 
 #channels {
   list-style: none;
