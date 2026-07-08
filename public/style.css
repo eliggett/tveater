@@ -66,6 +66,12 @@ html, body {
   font-size: 18px;
   letter-spacing: 0.5px;
   color: var(--accent);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+#sidebar-head h1 img {
+  flex-shrink: 0;
 }
 #filter {
   width: 100%;
