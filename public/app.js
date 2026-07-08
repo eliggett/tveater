@@ -33,6 +33,7 @@ let signalTimer = null;
 let watchTimer = null;
 let lastTime = 0;         // last observed video.currentTime (stall detection)
 let stalledSince = 0;     // when a waiting/stall began (0 = not stalled)
+let awaitingPlay = false; // a freshly-attached stream we've yet to see play
 
 // ---- Channel list ----------------------------------------------------------
 async function loadChannels() {
@@ -242,11 +243,13 @@ function showBanner(msg) {
 
 function hideBanner() {
   statusTextEl.style.display = "none";
+  awaitingPlay = false;
 }
 
 function attachHls(playlist) {
   destroyHls();
   resetCaptions();
+  awaitingPlay = true;   // watchdog may need to hide the banner if "playing" is missed
   if (window.Hls && Hls.isSupported()) {
     hls = new Hls({
       liveSyncDurationCount: 3,
@@ -311,6 +314,11 @@ function watchPlayback() {
   lastTime = video.currentTime;
   if (!advancing) return;                       // genuinely buffering — leave it
   if (dot.className !== "live") setDot("live");
+  // The just-attached stream is clearly playing but its "playing" event was
+  // missed, so hideBanner() never ran — clear the stale gray overlay now.
+  // Gated on awaitingPlay so a pending switch (old stream still advancing off
+  // its buffer) keeps the "Switching…" banner up until the new stream attaches.
+  if (awaitingPlay) hideBanner();
   if (stalledSince && Date.now() - stalledSince > 1200) {
     const t = video.currentTime;
     try { video.currentTime = t; } catch (_) { /* ignore */ }
